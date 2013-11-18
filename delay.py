@@ -26,11 +26,30 @@ def config_hook(conduit):
     global delay_time
     delay_time = int(conduit.confString('main', 'delay'))
 
+    parser = conduit.getOptParser()
+    if not parser:
+        return
+
+    if hasattr(parser, 'plugin_option_group'):
+        parser = parser.plugin_option_group
+
+    def delay(opt, key, val, parser):
+        global delay_time
+        delay_time = int(val)
+
+    parser.add_option('--delay', action='callback',
+                      callback=delay, dest='delay', default=0, type=int,
+                      help='Delay updates newer than DELAY hours')
+
 def exclude_hook(conduit):
-    conduit.info(3, "Delaying packages newer than %d hours" % delay_time)
+    if delay_time == 0:
+        conduit.info(1, 'Delaying disabled on command line')
+        return
+
+    conduit.info(1, 'Delaying packages newer than %d hours' % delay_time)
     for pkg in conduit._base.doPackageLists(pkgnarrow='updates'):
         age = time.time() - pkg.committime
         if age <= delay_time * 60 * 60:
-            delay = ( delay_time  * 60 * 60 - age ) / 60 / 60
-            conduit.info(3, "--> delaying %s.%s for %d more hours" % (pkg.name, pkg.arch, delay))
+            delay = ( delay_time * 60 * 60 - age ) / 60 / 60
+            conduit.info(1, '--> Delaying %s.%s %s:%s-%s for %d more hours' % (pkg.name, pkg.arch, pkg.epoch, pkg.version, pkg.release, delay))
             conduit.delPackage(pkg)
