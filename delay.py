@@ -22,6 +22,9 @@ import time
 requires_api_version = '2.1'
 plugin_type = (TYPE_CORE,)
 
+def timefmt(secs):
+    return time.strftime('%Y-%m-%d %H:%M', time.localtime(secs))
+
 def config_hook(conduit):
     global delay_time
     delay_time = int(conduit.confString('main', 'delay'))
@@ -48,8 +51,16 @@ def exclude_hook(conduit):
 
     conduit.info(1, 'Delaying packages newer than %d hours' % delay_time)
     for pkg in conduit._base.doPackageLists(pkgnarrow='updates'):
-        age = time.time() - pkg.committime
+
+        if hasattr(pkg, 'filetime'):
+            pkgtime = pkg.filetime
+        elif hasattr(pkg, 'buildtime'):
+            pkgtime = pkg.buildtime
+        else:
+            pkgtime = pkg.committime
+
+        age = time.time() - pkgtime
         if age <= delay_time * 60 * 60:
             delay = ( delay_time * 60 * 60 - age ) / 60 / 60
-            conduit.info(1, '--> Delaying %s.%s %s:%s-%s for %d more hours' % (pkg.name, pkg.arch, pkg.epoch, pkg.version, pkg.release, delay))
+            conduit.info(1, '--> Delaying %s for %d more hours (updated on %s)' % (pkg.ui_envra, delay, timefmt(pkgtime)))
             conduit.delPackage(pkg)
