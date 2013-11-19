@@ -21,10 +21,6 @@ Usage
 -----
 The configuration file lets you enable/disable the plugin, and configure a delay time (in hours).
 
-On the command line you have the option to override the delay time (e.g. to disable the plugin by setting the delay to 0).
-
-    yum update --delay 0
-
 When the plugin is actived, it will clearly display the delay for packages:
 
     Delaying packages newer than 72 hours
@@ -33,6 +29,14 @@ And if packages are being delayed, the plugin will provide you with all the requ
 
     --> Delaying firefox-25.0.1-1.el6.remi.x86_64 for 12 more hours (updated on 2013-11-16 13:00)
     --> Delaying xulrunner-last-25.0.1-1.el6.remi.x86_64 for 12 more hours (updated on 2013-11-16 13:00)
+
+On the command line you have the possibility to override the delay time (e.g. to disable the plugin by setting the delay to 0).
+
+    yum update --delay 0
+
+In this case, the plugin will display:
+
+    Delaying disabled on command line
 
 
 Feedback
