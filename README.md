@@ -17,10 +17,26 @@ Consider a set of hardened minimal jumphosts. For security it is a requirement t
 By having a different delay (in this case up to 3 days), we can guarantee that in case there is a problematic update, not all servers will have this problematic package, while still having automatic updates enabled and an acceptable timeframe in which unavailability is detectable by the users.
 
 
+Installation
+------------
+Simply run 'make install' to install the plugin and the configuration.
+
+
+Configuration
+-------------
+The configuration file is typically placed at '/etc/yum/pluginconf.d/delay.conf' and looks like:
+
+    [main]
+    enabled=1
+
+    # Delay in hours
+    delay=24
+
+The 'enabled' option lets you enable/disable the plugin, and the 'delay' option is used to set a delay time (in hours).
+
+
 Usage
 -----
-The configuration file lets you enable/disable the plugin, and configure a delay time (in hours).
-
 When the plugin is actived, it will clearly display the delay for packages:
 
     Delaying packages newer than 72 hours
