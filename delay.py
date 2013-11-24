@@ -52,6 +52,10 @@ def exclude_hook(conduit):
     conduit.info(1, 'Delaying packages newer than %d hours' % delay_time)
     for pkg in conduit._base.doPackageLists(pkgnarrow='updates'):
 
+        if conduit._base.conf.debuglevel > 2:
+            conduit.info(1, 'delay:Package %s has filetime %s, buildtime %s and committime %s' %
+                (pkg.ui_envra, timefmt(pkg.filetime), timefmt(pkg.buildtime), timefmt(pkg.committime)))
+
         if hasattr(pkg, 'filetime'):
             pkgtime = pkg.filetime
         elif hasattr(pkg, 'buildtime'):
