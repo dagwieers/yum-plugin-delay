@@ -54,6 +54,15 @@ In this case, the plugin will display:
 
     Delaying disabled on command line
 
+In case you would like to see the various timestamps inside the metadata, you can raise the debuglevel to 3 or higher:
+
+    yum update -d3
+
+
+Known problems
+--------------
+This plugin does not work together with Red Hat Network since RHN's metadata retains the original file's timestamp and does not reflect the time that the package was added/moved to the repository. Unfortunately there is not other way to known when a package was added to the repository, we do know when it was built and when it was "committed". We wonder what the file's timestamp in the metadata is really useful for if it does not (always) represent the time it was added to the repository.
+
 
 Feedback
 --------
